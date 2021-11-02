@@ -2,6 +2,7 @@ package com.pacheco.hoursregistry.service;
 
 import java.util.Optional;
 
+import com.pacheco.hoursregistry.dto.TaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Task;
 import com.pacheco.hoursregistry.repository.TaskRepository;
@@ -43,4 +44,18 @@ public class TaskServiceImpl implements TaskService {
         return repository.save(task);
     }
 
+    @Override
+    public Task updateTask(Long taskId, TaskDTO taskDTO) throws NoEntityFoundException {
+        Task task = consultTask(taskId);
+
+        if (taskDTO.getResume() != null && !taskDTO.getResume().isEmpty()) {
+            task.setResume(taskDTO.getResume());
+        }
+
+        if (taskDTO.getDone() != null) {
+            task.setDone(taskDTO.getDone());
+        }
+
+        return saveTask(task);
+    }
 }

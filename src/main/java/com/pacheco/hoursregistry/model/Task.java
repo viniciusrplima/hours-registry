@@ -25,7 +25,7 @@ public class Task {
     @NotBlank
     private String resume;
 
-    private Boolean done;
+    private Boolean done = Boolean.FALSE;
 
     @OneToMany
     private List<Effort> efforts;
