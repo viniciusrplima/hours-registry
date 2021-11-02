@@ -1,5 +1,6 @@
 package com.pacheco.hoursregistry.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -29,5 +30,9 @@ public class Effort {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime termination;
+
+    public Effort(LocalDateTime initialTime) {
+        this.initial = initialTime;
+    }
 
 }
