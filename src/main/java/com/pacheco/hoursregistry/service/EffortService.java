@@ -11,6 +11,4 @@ public interface EffortService {
 
     public Effort updateEffort(Long taskId) throws NoEntityFoundException;
 
-    public List<Effort> listUndoneEfforts();
-
 }

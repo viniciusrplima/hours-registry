@@ -2,7 +2,6 @@ package com.pacheco.hoursregistry.model;
 
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +26,7 @@ public class Task {
 
     private Boolean done = Boolean.FALSE;
 
-    @OneToMany
+    @OneToMany(mappedBy = "task")
     private List<Effort> efforts;
 
     public Task(String resume) {

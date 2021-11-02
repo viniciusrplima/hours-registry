@@ -40,7 +40,7 @@ public class EffortController {
     }
 
     @GetMapping("/efforts")
-    private List<Effort> listEffortsUndone(@RequestParam(value="done", required=false) Optional<Boolean> effortDone) {
+    private List<?> listEffortsUndone(@RequestParam(value="done", required=false) Optional<Boolean> effortDone) {
         if (effortDone.isPresent()) {
             if (effortDone.get()) {
                 return effortRepository.findDoneEfforts();
@@ -50,7 +50,7 @@ public class EffortController {
             }
         }
         else {
-            return effortRepository.findAll();
+            return effortRepository.findAllEfforts();
         }
     }
 

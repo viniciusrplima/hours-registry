@@ -38,22 +38,13 @@ public class EffortServiceImpl implements EffortService {
         }
 
         if (effort == null) {
-            effort = new Effort(LocalDateTime.now());
-            effort = repository.save(effort);
-            task.getEfforts().add(effort);
-            task = taskService.saveTask(task);
+            effort = new Effort(LocalDateTime.now(), task);
         }
         else {
             effort.setTermination(LocalDateTime.now());
-            effort = repository.save(effort);
         }
 
-        return effort;
-    }
-
-    @Override
-    public List<Effort> listUndoneEfforts() {
-        return repository.findUndoneEfforts();
+        return repository.save(effort);
     }
     
 }
