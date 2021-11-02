@@ -3,6 +3,7 @@ package com.pacheco.hoursregistry.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.pacheco.hoursregistry.dto.EffortTaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Effort;
 import com.pacheco.hoursregistry.repository.EffortRepository;
@@ -27,11 +28,23 @@ public class EffortController {
     @Autowired
     private EffortRepository effortRepository;
 
-    @GetMapping("/task/{taskId}/effort")
+    @GetMapping("/task/{taskId}/efforts")
     private ResponseEntity<?> listEffortsFromTask(@PathVariable Long taskId) {
         try {
             List<Effort> efforts = effortService.listEffortsFromTask(taskId);
             return ResponseEntity.ok(efforts);
+        }
+        catch (NoEntityFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new CustomErrorMessage(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/effort/{effortId}")
+    private ResponseEntity<?> consultEffort(@PathVariable Long effortId) {
+        try {
+            EffortTaskDTO effort = effortService.consultEffortTask(effortId);
+            return ResponseEntity.ok(effort);
         }
         catch (NoEntityFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
