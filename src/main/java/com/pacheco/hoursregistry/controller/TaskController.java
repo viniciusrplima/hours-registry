@@ -1,6 +1,7 @@
 package com.pacheco.hoursregistry.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.pacheco.hoursregistry.dto.TaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,13 +34,13 @@ public class TaskController {
     private TaskService taskService;
 
     @GetMapping
-    private List<Task> listTasks() {
-        return taskRepository.findAll();
-    }
-
-    @GetMapping("/undone")
-    private List<Task> listUndoneTasks() {
-        return taskRepository.findUndoneTasks();
+    private List<Task> listTasks(@RequestParam(value="done", required=false) Optional<Boolean> taskDone) {
+        if (taskDone.isPresent()) {
+            return taskRepository.findTasksByDone(taskDone.get());
+        }
+        else {
+            return taskRepository.findAll();
+        }
     }
 
     @GetMapping("/{taskId}")

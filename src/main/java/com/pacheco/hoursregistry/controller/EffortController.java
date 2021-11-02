@@ -1,6 +1,7 @@
 package com.pacheco.hoursregistry.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Effort;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,9 +39,19 @@ public class EffortController {
         }
     }
 
-    @GetMapping("/efforts/undone")
-    private List<Effort> listEffortsUndone() {
-        return effortRepository.findUndoneEfforts();
+    @GetMapping("/efforts")
+    private List<Effort> listEffortsUndone(@RequestParam(value="done", required=false) Optional<Boolean> effortDone) {
+        if (effortDone.isPresent()) {
+            if (effortDone.get()) {
+                return effortRepository.findDoneEfforts();
+            }
+            else {
+                return effortRepository.findUndoneEfforts();
+            }
+        }
+        else {
+            return effortRepository.findAll();
+        }
     }
 
     @PostMapping("/task/{taskId}/effort")

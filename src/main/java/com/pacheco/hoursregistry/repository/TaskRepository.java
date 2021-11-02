@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    @Query("select t from Task t where t.done = false")
-    public List<Task> findUndoneTasks();
+    public List<Task> findTasksByDone(Boolean done);
 
 }

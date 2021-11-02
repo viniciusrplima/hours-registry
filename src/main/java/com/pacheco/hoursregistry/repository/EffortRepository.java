@@ -14,4 +14,7 @@ public interface EffortRepository extends JpaRepository<Effort, Long> {
     @Query("select e from Effort e where e.termination = null")
     public List<Effort> findUndoneEfforts();
 
+    @Query("select e from Effort e where e.termination != null")
+    public List<Effort> findDoneEfforts();
+
 }
