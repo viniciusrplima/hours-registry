@@ -1,7 +1,7 @@
 package com.pacheco.hoursregistry.controller;
 
-import com.pacheco.hoursregistry.api.GithubApi;
-import com.pacheco.hoursregistry.api.Issue;
+import com.pacheco.hoursregistry.service.GithubApi;
+import com.pacheco.hoursregistry.model.GithubIssue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class GitHubController {
     private GithubApi api;
 
     @GetMapping("/issues")
-    public List<Issue> listGithubIssues() {
+    public List<GithubIssue> listGithubIssues() {
         try {
             return api.getIssues();
         } catch (Exception e) {

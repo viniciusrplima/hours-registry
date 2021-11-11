@@ -2,11 +2,7 @@ package com.pacheco.hoursregistry.model;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
@@ -29,7 +25,12 @@ public class Task {
     @OneToMany(mappedBy = "task")
     private List<Effort> efforts;
 
-    public Task(String resume) {
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User user;
+
+    public Task(User user, String resume) {
+        this.user = user;
         this.resume = resume;
     }
 

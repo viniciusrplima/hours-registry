@@ -1,4 +1,4 @@
-package com.pacheco.hoursregistry.api;
+package com.pacheco.hoursregistry.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @Data
 @ToString
 @JsonRootName("issue")
-public class Issue {
+public class GithubIssue {
 
     private String id;
 

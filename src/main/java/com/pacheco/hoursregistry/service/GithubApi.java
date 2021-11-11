@@ -1,5 +1,6 @@
-package com.pacheco.hoursregistry.api;
+package com.pacheco.hoursregistry.service;
 
+import com.pacheco.hoursregistry.model.GithubIssue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +29,8 @@ public class GithubApi {
         return builder.defaultHeader("Authorization", "token " + token).build();
     }
 
-    public List<Issue> getIssues() throws Exception {
-        Issue[] issues = restTemplate.getForObject(BASE_URL + "/issues", Issue[].class);
+    public List<GithubIssue> getIssues() throws Exception {
+        GithubIssue[] issues = restTemplate.getForObject(BASE_URL + "/issues", GithubIssue[].class);
         return Arrays.asList(issues);
     }
 
