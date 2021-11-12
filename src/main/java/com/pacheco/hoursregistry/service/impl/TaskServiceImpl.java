@@ -1,4 +1,4 @@
-package com.pacheco.hoursregistry.service;
+package com.pacheco.hoursregistry.service.impl;
 
 import java.util.Optional;
 
@@ -7,6 +7,7 @@ import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Task;
 import com.pacheco.hoursregistry.repository.TaskRepository;
 
+import com.pacheco.hoursregistry.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

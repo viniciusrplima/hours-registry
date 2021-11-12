@@ -1,4 +1,4 @@
-package com.pacheco.hoursregistry.service;
+package com.pacheco.hoursregistry.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +10,8 @@ import com.pacheco.hoursregistry.model.Effort;
 import com.pacheco.hoursregistry.model.Task;
 import com.pacheco.hoursregistry.repository.EffortRepository;
 
+import com.pacheco.hoursregistry.service.EffortService;
+import com.pacheco.hoursregistry.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,12 +26,12 @@ public class Task {
     @OneToMany(mappedBy = "task")
     private List<Effort> efforts;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
     private User user;
 
-    public Task(User user, String resume) {
-        this.user = user;
+    public Task(String resume) {
         this.resume = resume;
     }
 

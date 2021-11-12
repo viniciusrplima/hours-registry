@@ -16,6 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     private String password;
@@ -25,4 +26,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Task> tasks;
 
+    public User(String username, String password, String githubToken) {
+        this.username = username;
+        this.password = password;
+        this.githubToken = githubToken;
+    }
 }

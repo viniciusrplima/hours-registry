@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/task")
 @CrossOrigin
 public class TaskController {
     
@@ -26,7 +25,7 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping
+    @GetMapping("/tasks")
     private List<Task> listTasks(@RequestParam(value="done", required=false) Optional<Boolean> taskDone) {
         if (taskDone.isPresent()) {
             return taskRepository.findTasksByDone(taskDone.get());
@@ -36,7 +35,7 @@ public class TaskController {
         }
     }
 
-    @GetMapping("/{taskId}")
+    @GetMapping("/task/{taskId}")
     private ResponseEntity<?> consultTask(@PathVariable Long taskId) {
         try {
             Task task = taskService.consultTask(taskId);
@@ -48,13 +47,13 @@ public class TaskController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/task")
     private ResponseEntity<?> registerTask(@RequestBody String taskResume) {
         Task task = taskService.registerTask(taskResume);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
-    @PutMapping("/{taskId}")
+    @PutMapping("/task/{taskId}")
     private ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDTO) {
         try {
             Task task = taskService.updateTask(taskId, taskDTO);
@@ -66,7 +65,7 @@ public class TaskController {
         }
     }
 
-    @DeleteMapping("/{taskId}")
+    @DeleteMapping("/task/{taskId}")
     private void removeTask(@PathVariable Long taskId) {
         taskService.removeTask(taskId);
     }
