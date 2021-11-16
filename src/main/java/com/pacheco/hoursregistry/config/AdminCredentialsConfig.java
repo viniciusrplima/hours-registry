@@ -23,12 +23,15 @@ public class AdminCredentialsConfig {
     @Value("${admin.password}")
     private String password;
 
+    @Value("${github.auth.token}")
+    private String githubToken;
+
     @Autowired
     private UserService userService;
 
     @PostConstruct
     public void setupAdminCredentials() {
-        UserDTO user = new UserDTO(username, password, null);
+        UserDTO user = new UserDTO(username, password, githubToken);
         userService.register(user, List.of(RoleTypes.ADMIN, RoleTypes.USER));
     }
 
