@@ -1,6 +1,7 @@
 package com.pacheco.hoursregistry.service;
 
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
+import com.pacheco.hoursregistry.model.AuthUserDetails;
 import com.pacheco.hoursregistry.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         }
 
         if (user.getUsername().equals(username)) {
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
+            return new AuthUserDetails(user);
         } else {
             throw new UsernameNotFoundException("Couldn't found user with username: " + username);
         }

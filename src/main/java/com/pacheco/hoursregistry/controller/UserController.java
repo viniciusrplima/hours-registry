@@ -2,6 +2,7 @@ package com.pacheco.hoursregistry.controller;
 
 import com.pacheco.hoursregistry.dto.UserDTO;
 import com.pacheco.hoursregistry.exception.DuplicityEntityException;
+import com.pacheco.hoursregistry.model.RoleTypes;
 import com.pacheco.hoursregistry.model.User;
 import com.pacheco.hoursregistry.repository.UserRepository;
 import com.pacheco.hoursregistry.service.UserService;
@@ -33,7 +34,18 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDto) {
         try {
-            User user = userService.register(userDto);
+            User user = userService.register(userDto, userDto.getRoles());
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        } catch (DuplicityEntityException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new CustomErrorMessage(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerCommonUser(@RequestBody UserDTO userDto) {
+        try {
+            User user = userService.register(userDto, List.of(RoleTypes.USER));
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         } catch (DuplicityEntityException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

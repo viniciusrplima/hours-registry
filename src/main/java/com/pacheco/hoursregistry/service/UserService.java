@@ -10,6 +10,6 @@ public interface UserService {
 
     public User find(String username) throws NoEntityFoundException;
 
-    public User register(UserDTO userDto);
+    public User register(UserDTO userDto, List<String> roles);
 
 }

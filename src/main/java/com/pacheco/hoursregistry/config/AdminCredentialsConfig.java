@@ -1,14 +1,20 @@
 package com.pacheco.hoursregistry.config;
 
 import com.pacheco.hoursregistry.dto.UserDTO;
+import com.pacheco.hoursregistry.model.RoleTypes;
 import com.pacheco.hoursregistry.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Component
+@DependsOn("userRolesConfig")
 public class AdminCredentialsConfig {
 
     @Value("${admin.username}")
@@ -23,7 +29,7 @@ public class AdminCredentialsConfig {
     @PostConstruct
     public void setupAdminCredentials() {
         UserDTO user = new UserDTO(username, password, null);
-        userService.register(user);
+        userService.register(user, List.of(RoleTypes.ADMIN, RoleTypes.USER));
     }
 
 }

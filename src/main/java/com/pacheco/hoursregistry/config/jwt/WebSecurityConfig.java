@@ -1,5 +1,6 @@
 package com.pacheco.hoursregistry.config.jwt;
 
+import com.pacheco.hoursregistry.model.RoleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,15 +49,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests()
-
-                .antMatchers("/auth/**")
-                .permitAll().anyRequest().authenticated().and()
+        httpSecurity.httpBasic().and()
+                .authorizeRequests()
+                .antMatchers("/auth/**", "/register").permitAll()
+                .antMatchers("/task/**", "/tasks/**", "/effort/**", "/efforts/**", "/issues/**").hasAuthority(RoleTypes.USER)
+                .antMatchers("/user/**", "/users/**").hasAuthority(RoleTypes.ADMIN)
+                .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.csrf().disable();
-        httpSecurity.headers().frameOptions().disable();
+        //httpSecurity.headers().frameOptions().disable();
     }
 }

@@ -8,7 +8,7 @@ You must create `.env` file with variables used by system. Fill variables of dat
 
 ```
 GITHUB_TOKEN=<github-token>
-
+JWT_SECRET=<jwt-secret>
 DATABASE_URL=<database-url>
 DATABASE_USERNAME=<database-username>
 DATABASE_PASSWORD=<database-password>

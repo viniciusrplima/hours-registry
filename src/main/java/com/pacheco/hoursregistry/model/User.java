@@ -26,9 +26,16 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Task> tasks;
 
-    public User(String username, String password, String githubToken) {
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
+
+    public User(String username, String password, String githubToken, List<Role> roles) {
         this.username = username;
         this.password = password;
         this.githubToken = githubToken;
+        this.roles = roles;
     }
 }
