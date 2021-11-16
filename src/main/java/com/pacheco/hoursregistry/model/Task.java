@@ -31,8 +31,9 @@ public class Task {
     @JoinColumn(nullable = false)
     private User user;
 
-    public Task(String resume) {
+    public Task(String resume, User user) {
         this.resume = resume;
+        this.user = user;
     }
 
 }

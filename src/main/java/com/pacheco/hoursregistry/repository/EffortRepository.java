@@ -20,18 +20,18 @@ public interface EffortRepository extends JpaRepository<Effort, Long> {
             "e.termination, " +
             "e.task.resume, " +
             "e.task.done) " + 
-        "from Effort e";
+        "from Effort e where e.task.user.username = :username";
 
-    @Query(baseQuery + " where e.termination = null")
-    public List<EffortTaskDTO> findUndoneEfforts();
+    @Query(baseQuery + " and e.termination = null")
+    public List<EffortTaskDTO> findUndoneEfforts(String username);
 
-    @Query(baseQuery + " where e.termination != null")
-    public List<EffortTaskDTO> findDoneEfforts();
+    @Query(baseQuery + " and e.termination != null")
+    public List<EffortTaskDTO> findDoneEfforts(String username);
 
     @Query(baseQuery)
-    public List<EffortTaskDTO> findAllEfforts();
+    public List<EffortTaskDTO> findAllEfforts(String username);
 
-    @Query(baseQuery + " where e.id = :effortId")
-    public Optional<EffortTaskDTO> findEffortTaskById(Long effortId);
+    @Query(baseQuery + " and e.id = :effortId")
+    public Optional<EffortTaskDTO> findEffortTaskById(String username, Long effortId);
 
 }

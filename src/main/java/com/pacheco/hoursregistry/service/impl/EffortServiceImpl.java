@@ -15,6 +15,9 @@ import com.pacheco.hoursregistry.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
+
+
 @Service
 public class EffortServiceImpl implements EffortService {
 
@@ -52,20 +55,23 @@ public class EffortServiceImpl implements EffortService {
     }
 
     @Override
-    public Effort consultEffort(Long effortId) throws NoEntityFoundException {
-        Optional<Effort> opEffort = repository.findById(effortId);
+    public List<EffortTaskDTO> findDoneEfforts() {
+        return repository.findDoneEfforts(currentUsername());
+    }
 
-        if (opEffort.isEmpty()) {
-            throw new NoEntityFoundException(String.format(
-                "Can't find effort with id %d", effortId));
-        }
+    @Override
+    public List<EffortTaskDTO> findUndoneEfforts() {
+        return repository.findDoneEfforts(currentUsername());
+    }
 
-        return opEffort.get();
+    @Override
+    public List<EffortTaskDTO> findAllEfforts() {
+        return repository.findAllEfforts(currentUsername());
     }
 
     @Override
     public EffortTaskDTO consultEffortTask(Long effortId) throws NoEntityFoundException {
-        Optional<EffortTaskDTO> opEffort = repository.findEffortTaskById(effortId);
+        Optional<EffortTaskDTO> opEffort = repository.findEffortTaskById(currentUsername(), effortId);
 
         if (opEffort.isEmpty()) {
             throw new NoEntityFoundException(String.format(

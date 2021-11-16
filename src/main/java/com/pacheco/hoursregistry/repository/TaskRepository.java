@@ -1,6 +1,7 @@
 package com.pacheco.hoursregistry.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.pacheco.hoursregistry.model.Task;
 
@@ -10,6 +11,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    public List<Task> findTasksByDone(Boolean done);
+    public List<Task> findTasksByUserUsernameAndDone(String username, Boolean done);
+
+    public List<Task> findTasksByUserUsername(String username);
+
+    public Optional<Task> findTaskByUserUsernameAndId(String username, Long id);
+
+    public void deleteByUserUsernameAndId(String username, Long id);
 
 }

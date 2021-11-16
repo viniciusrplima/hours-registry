@@ -4,7 +4,13 @@ import com.pacheco.hoursregistry.dto.TaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Task;
 
+import java.util.List;
+
 public interface TaskService {
+
+    public List<Task> findAllTasks();
+
+    public List<Task> findTasksByDone(Boolean done);
 
     public Task registerTask(String taskResume);
 
@@ -13,7 +19,5 @@ public interface TaskService {
     public void removeTask(Long taskId);
 
     public Task updateTask(Long taskId, TaskDTO taskDTO) throws NoEntityFoundException;
-
-    public Task saveTask(Task task);
 
 }

@@ -10,10 +10,13 @@ public interface EffortService {
     
     public List<Effort> listEffortsFromTask(Long taskId) throws NoEntityFoundException;
 
-    public Effort consultEffort(Long effortId) throws NoEntityFoundException;
-
     public EffortTaskDTO consultEffortTask(Long effortId) throws NoEntityFoundException;
 
     public Effort updateEffort(Long taskId) throws NoEntityFoundException;
 
+    public List<EffortTaskDTO> findDoneEfforts();
+
+    public List<EffortTaskDTO> findUndoneEfforts();
+
+    public List<EffortTaskDTO> findAllEfforts();
 }

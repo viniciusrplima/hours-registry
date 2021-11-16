@@ -53,4 +53,5 @@ public class UserServiceImpl implements UserService {
             throw new DuplicityEntityException(String.format("Username %s already exists", userDto.getUsername()));
         }
     }
+
 }

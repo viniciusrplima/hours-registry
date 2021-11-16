@@ -22,9 +22,6 @@ public class EffortController {
     @Autowired
     private EffortService effortService;
 
-    @Autowired
-    private EffortRepository effortRepository;
-
     @GetMapping("/task/{taskId}/efforts")
     private ResponseEntity<?> listEffortsFromTask(@PathVariable Long taskId) {
         try {
@@ -53,14 +50,14 @@ public class EffortController {
     private List<?> listEffortsUndone(@RequestParam(value="done", required=false) Optional<Boolean> effortDone) {
         if (effortDone.isPresent()) {
             if (effortDone.get()) {
-                return effortRepository.findDoneEfforts();
+                return effortService.findDoneEfforts();
             }
             else {
-                return effortRepository.findUndoneEfforts();
+                return effortService.findUndoneEfforts();
             }
         }
         else {
-            return effortRepository.findAllEfforts();
+            return effortService.findAllEfforts();
         }
     }
 

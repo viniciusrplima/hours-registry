@@ -6,7 +6,6 @@ import java.util.Optional;
 import com.pacheco.hoursregistry.dto.TaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Task;
-import com.pacheco.hoursregistry.repository.TaskRepository;
 import com.pacheco.hoursregistry.service.TaskService;
 import com.pacheco.hoursregistry.util.CustomErrorMessage;
 
@@ -20,18 +19,16 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController {
     
     @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
     private TaskService taskService;
 
     @GetMapping("/tasks")
     private List<Task> listTasks(@RequestParam(value="done", required=false) Optional<Boolean> taskDone) {
+
         if (taskDone.isPresent()) {
-            return taskRepository.findTasksByDone(taskDone.get());
+            return taskService.findTasksByDone(taskDone.get());
         }
         else {
-            return taskRepository.findAll();
+            return taskService.findAllTasks();
         }
     }
 

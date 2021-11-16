@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
 
@@ -18,5 +17,11 @@ public class UserDTO {
     private String githubToken;
 
     private List<String> roles;
+
+    public UserDTO(String username, String password, String githubToken) {
+        this.username = username;
+        this.password = password;
+        this.githubToken = githubToken;
+    }
 
 }
