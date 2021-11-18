@@ -22,9 +22,6 @@ import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
 @Service
 public class GithubApi {
 
-    @Value("${github.auth.token}")
-    private String token;
-
     private final String BASE_URL="https://api.github.com";
 
     @Autowired
