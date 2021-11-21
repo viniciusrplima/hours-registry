@@ -3,10 +3,10 @@ package com.pacheco.hoursregistry.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class AuthenticationErrorException extends RuntimeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class BusinessException extends RuntimeException {
 
-    public AuthenticationErrorException(String message) {
+    public BusinessException(String message) {
         super(message);
     }
 }

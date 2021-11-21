@@ -14,10 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    public static final String CANT_FIND_USER = "Couldn't found user with username: ";
+    public static final String USERNAME_ALREADY_EXISTS = "Username %s already exists";
 
     @Autowired
     private UserRepository userRepository;
@@ -30,13 +32,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User find(String username) throws NoEntityFoundException {
-        Optional<User> opUser = userRepository.findByUsername(username);
-
-        if (opUser.isEmpty()) {
-            throw new NoEntityFoundException("Couldn't found user with username: " + username);
-        }
-
-        return opUser.get();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoEntityFoundException(CANT_FIND_USER + username));
     }
 
     @Override
@@ -50,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicityEntityException(String.format("Username %s already exists", userDto.getUsername()));
+            throw new DuplicityEntityException(String.format(USERNAME_ALREADY_EXISTS, userDto.getUsername()));
         }
     }
 

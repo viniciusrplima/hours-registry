@@ -4,14 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.pacheco.hoursregistry.dto.TaskDTO;
-import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Task;
 import com.pacheco.hoursregistry.service.TaskService;
-import com.pacheco.hoursregistry.util.CustomErrorMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,37 +29,24 @@ public class TaskController {
         }
     }
 
-    @GetMapping("/task/{taskId}")
-    private ResponseEntity<?> consultTask(@PathVariable Long taskId) {
-        try {
-            Task task = taskService.consultTask(taskId);
-            return ResponseEntity.ok(task);
-        }
-        catch (NoEntityFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new CustomErrorMessage(e.getMessage()));
-        }
+    @GetMapping("/tasks/{taskId}")
+    private Task consultTask(@PathVariable Long taskId) {
+        return taskService.consultTask(taskId);
     }
 
-    @PostMapping("/task")
-    private ResponseEntity<?> registerTask(@RequestBody String taskResume) {
-        Task task = taskService.registerTask(taskResume);
-        return ResponseEntity.status(HttpStatus.CREATED).body(task);
+    @PostMapping("/tasks")
+    @ResponseStatus(HttpStatus.CREATED)
+    private Task registerTask(@RequestBody String taskResume) {
+        return taskService.registerTask(taskResume);
     }
 
-    @PutMapping("/task/{taskId}")
-    private ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDTO) {
-        try {
-            Task task = taskService.updateTask(taskId, taskDTO);
-            return ResponseEntity.ok(task);
-        }
-        catch (NoEntityFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new CustomErrorMessage(e.getMessage()));
-        }
+    @PutMapping("/tasks/{taskId}")
+    public Task updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDTO) {
+        return taskService.updateTask(taskId, taskDTO);
     }
 
-    @DeleteMapping("/task/{taskId}")
+    @DeleteMapping("/tasks/{taskId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     private void removeTask(@PathVariable Long taskId) {
         taskService.removeTask(taskId);
     }

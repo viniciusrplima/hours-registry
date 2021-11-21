@@ -11,14 +11,19 @@ import com.pacheco.hoursregistry.repository.TaskRepository;
 
 import com.pacheco.hoursregistry.service.TaskService;
 import com.pacheco.hoursregistry.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
 
 
 @Service
 public class TaskServiceImpl implements TaskService {
+
+    public static final String CANT_FIND_TASK = "Can't found task with id %d";
 
     @Autowired
     private TaskRepository repository;
@@ -37,7 +42,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task registerTask(String taskResume) {
+    public Task registerTask(String taskResume) throws NoEntityFoundException {
         User user = userService.find(currentUsername());
         Task task = new Task(taskResume, user);
 
@@ -46,17 +51,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task consultTask(Long taskId) throws NoEntityFoundException {
-        Optional<Task> opTask = repository.findTaskByUserUsernameAndId(currentUsername(), taskId);
-
-        if (opTask.isEmpty()) {
-            throw new NoEntityFoundException(String.format("Can't found task with id %d", taskId));
-        }
-
-        return opTask.get();
+        return repository.findTaskByUserUsernameAndId(currentUsername(), taskId)
+                .orElseThrow(() -> new NoEntityFoundException(String.format(CANT_FIND_TASK, taskId)));
     }
 
     @Override
+    @Transactional
     public void removeTask(Long taskId) {
+        consultTask(taskId);
         repository.deleteByUserUsernameAndId(currentUsername(), taskId);
     }
 
@@ -66,16 +68,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task updateTask(Long taskId, TaskDTO taskDTO) throws NoEntityFoundException {
-        Task task = consultTask(taskId);
+        Task taskActual = consultTask(taskId);
+        BeanUtils.copyProperties(taskDTO, taskActual, "id");
 
-        if (taskDTO.getResume() != null && !taskDTO.getResume().isEmpty()) {
-            task.setResume(taskDTO.getResume());
-        }
-
-        if (taskDTO.getDone() != null) {
-            task.setDone(taskDTO.getDone());
-        }
-
-        return saveTask(task);
+        return saveTask(taskActual);
     }
 }

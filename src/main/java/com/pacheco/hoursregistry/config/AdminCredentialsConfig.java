@@ -1,6 +1,7 @@
 package com.pacheco.hoursregistry.config;
 
 import com.pacheco.hoursregistry.dto.UserDTO;
+import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.RoleTypes;
 import com.pacheco.hoursregistry.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,12 @@ public class AdminCredentialsConfig {
 
     @PostConstruct
     public void setupAdminCredentials() {
-        UserDTO user = new UserDTO(username, password, githubToken);
-        userService.register(user, List.of(RoleTypes.ADMIN, RoleTypes.USER));
+        try {
+            userService.find(username);
+        } catch (NoEntityFoundException e) {
+            UserDTO user = new UserDTO(username, password, githubToken);
+            userService.register(user, List.of(RoleTypes.ADMIN, RoleTypes.USER));
+        }
     }
 
 }

@@ -22,6 +22,9 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    public static final String COULD_NOT_EXTRACT_TOKEN = "Could not extract JWT Token.";
+    public static final String TOKEN_EXPIRED = "JWT Token expired.";
+
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;
 
@@ -42,9 +45,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                throw new AuthenticationErrorException("Could not extract JWT Token.");
+                throw new AuthenticationErrorException(COULD_NOT_EXTRACT_TOKEN);
             } catch (ExpiredJwtException e) {
-                throw new AuthenticationErrorException("JWT Token expired.");
+                throw new AuthenticationErrorException(TOKEN_EXPIRED);
             }
         } else {
             log.warn("JWT Token dont start with Bearer string.");

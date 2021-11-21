@@ -21,6 +21,8 @@ import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
 @Service
 public class EffortServiceImpl implements EffortService {
 
+    public static final String CANT_FIND_EFFORT = "Can't find effort with id %d";
+
     @Autowired
     private TaskService taskService;
 
@@ -36,20 +38,7 @@ public class EffortServiceImpl implements EffortService {
     @Override
     public Effort updateEffort(Long taskId) throws NoEntityFoundException {
         Task task = taskService.consultTask(taskId);
-        Effort effort = null;
-
-        for (Effort e : task.getEfforts()) {
-            if (e.getTermination() == null) {
-                effort = e;
-            }
-        }
-
-        if (effort == null) {
-            effort = new Effort(LocalDateTime.now(), task);
-        }
-        else {
-            effort.setTermination(LocalDateTime.now());
-        }
+        Effort effort = task.updateUndoneEffortOrCreate();
 
         return repository.save(effort);
     }
@@ -71,14 +60,10 @@ public class EffortServiceImpl implements EffortService {
 
     @Override
     public EffortTaskDTO consultEffortTask(Long effortId) throws NoEntityFoundException {
-        Optional<EffortTaskDTO> opEffort = repository.findEffortTaskById(currentUsername(), effortId);
+        EffortTaskDTO effort = repository.findEffortTaskById(currentUsername(), effortId)
+                .orElseThrow(() -> new NoEntityFoundException(String.format(CANT_FIND_EFFORT, effortId)));
 
-        if (opEffort.isEmpty()) {
-            throw new NoEntityFoundException(String.format(
-                "Can't find effort with id %d", effortId));
-        }
-
-        return opEffort.get();
+        return effort;
     }
     
 }

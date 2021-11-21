@@ -51,10 +51,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.httpBasic().and()
                 .authorizeRequests()
+                .antMatchers("/tasks/**", "/efforts/**", "/issues/**").hasAuthority(RoleTypes.USER)
+                .antMatchers("/users/**").hasAuthority(RoleTypes.ADMIN)
                 .antMatchers("/auth/**", "/register").permitAll()
-                .antMatchers("/task/**", "/tasks/**", "/effort/**", "/efforts/**", "/issues/**").hasAuthority(RoleTypes.USER)
-                .antMatchers("/user/**", "/users/**").hasAuthority(RoleTypes.ADMIN)
-                .anyRequest().authenticated().and()
+                .and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
