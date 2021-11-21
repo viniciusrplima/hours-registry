@@ -2,6 +2,7 @@ package com.pacheco.hoursregistry.service;
 
 import com.pacheco.hoursregistry.model.GithubIssue;
 import com.pacheco.hoursregistry.model.User;
+import com.pacheco.hoursregistry.util.AuthorizationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
 
 
 @Slf4j
@@ -30,9 +29,16 @@ public class GithubApi {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthorizationUtil authorizationUtil;
+
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
+    }
+
+    private String currentUsername() {
+        return authorizationUtil.currentUsername();
     }
 
     public List<GithubIssue> getIssues() throws Exception {

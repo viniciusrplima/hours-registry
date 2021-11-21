@@ -1,8 +1,6 @@
 package com.pacheco.hoursregistry.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import com.pacheco.hoursregistry.dto.EffortTaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
@@ -12,11 +10,9 @@ import com.pacheco.hoursregistry.repository.EffortRepository;
 
 import com.pacheco.hoursregistry.service.EffortService;
 import com.pacheco.hoursregistry.service.TaskService;
+import com.pacheco.hoursregistry.util.AuthorizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
-
 
 @Service
 public class EffortServiceImpl implements EffortService {
@@ -28,6 +24,13 @@ public class EffortServiceImpl implements EffortService {
 
     @Autowired
     private EffortRepository repository;
+
+    @Autowired
+    private AuthorizationUtil authorizationUtil;
+
+    private String currentUsername() {
+        return authorizationUtil.currentUsername();
+    }
 
     @Override
     public List<Effort> listEffortsFromTask(Long taskId) throws NoEntityFoundException {

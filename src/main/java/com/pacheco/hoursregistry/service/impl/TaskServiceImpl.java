@@ -11,14 +11,12 @@ import com.pacheco.hoursregistry.repository.TaskRepository;
 
 import com.pacheco.hoursregistry.service.TaskService;
 import com.pacheco.hoursregistry.service.UserService;
+import com.pacheco.hoursregistry.util.AuthorizationUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-
-import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
-
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -30,6 +28,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthorizationUtil authorizationUtil;
+
+    private String currentUsername() {
+        return authorizationUtil.currentUsername();
+    }
 
     @Override
     public List<Task> findAllTasks() {
