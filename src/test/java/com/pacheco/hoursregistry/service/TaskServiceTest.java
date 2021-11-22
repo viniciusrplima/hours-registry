@@ -9,7 +9,6 @@ import com.pacheco.hoursregistry.model.User;
 import com.pacheco.hoursregistry.repository.TaskRepository;
 import com.pacheco.hoursregistry.service.impl.TaskServiceImpl;
 import com.pacheco.hoursregistry.util.AuthorizationUtil;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mockito.stubbing.Answer;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,42 +58,41 @@ public class TaskServiceTest {
         this.task = new Task("task nova", this.user);
         this.taskDTO = new TaskDTO(false, "task dto");
 
-        Mockito.when(authorizationUtil.currentUsername()).thenReturn("vinicius");
+        when(authorizationUtil.currentUsername()).thenReturn("vinicius");
     }
 
     @Test
     public void testFindTasks() {
-        Mockito.when(taskRepository.findTasksByUserUsername(Mockito.anyString())).thenReturn(List.of(new Task("aaa", user)));
+        when(taskRepository.findTasksByUserUsername(anyString())).thenReturn(List.of(new Task("aaa", user)));
 
         List<Task> tasks = taskService.findAllTasks();
 
-        Assert.assertEquals(1, tasks.size());
-        Assert.assertEquals("aaa", tasks.get(0).getResume());
-        Assert.assertEquals(user, tasks.get(0).getUser());
+        assertEquals(1, tasks.size());
+        assertEquals("aaa", tasks.get(0).getResume());
+        assertEquals(user, tasks.get(0).getUser());
     }
 
     @Test
     public void testFindTask() {
-        Mockito.when(taskRepository.findTaskByUserUsernameAndId(Mockito.anyString(), Mockito.anyLong()))
-                .thenReturn(Optional.of(this.task));
+        when(taskRepository.findTaskByUserUsernameAndId(anyString(), anyLong())).thenReturn(Optional.of(this.task));
 
         Task task = taskService.consultTask(1L);
 
-        Assert.assertEquals(this.task, task);
+        assertEquals(this.task, task);
     }
 
     @Test
     public void testFindTaskNotExists() {
-        Mockito.when(taskRepository.findTaskByUserUsernameAndId(Mockito.anyString(), Mockito.anyLong()))
+        when(taskRepository.findTaskByUserUsernameAndId(anyString(), anyLong()))
                 .thenReturn(Optional.empty());
 
-        Assert.assertThrows(NoEntityFoundException.class, () -> taskService.consultTask(1L));
+        assertThrows(NoEntityFoundException.class, () -> taskService.consultTask(1L));
     }
 
     @Test
     public void testRegisterTask() {
-        Mockito.when(userService.find(Mockito.anyString())).thenReturn(user);
-        Mockito.when(taskRepository.save(Mockito.any())).then(new Answer<Task>() {
+        when(userService.find(anyString())).thenReturn(user);
+        when(taskRepository.save(any())).then(new Answer<Task>() {
             @Override
             public Task answer(InvocationOnMock invocationOnMock) throws Throwable {
                 return (Task) invocationOnMock.getArguments()[0];
@@ -101,24 +102,24 @@ public class TaskServiceTest {
         String taskResume = "my task resume";
         Task task = taskService.registerTask(taskResume);
 
-        Assert.assertEquals(taskResume, task.getResume());
-        Assert.assertFalse(task.getDone());
-        Assert.assertNull(task.getEfforts());
-        Assert.assertEquals(user, task.getUser());
+        assertEquals(taskResume, task.getResume());
+        assertFalse(task.getDone());
+        assertNull(task.getEfforts());
+        assertEquals(user, task.getUser());
     }
 
     @Test
     public void testRegisterTaskUserNotExists() {
-        Mockito.when(userService.find(Mockito.anyString())).thenThrow(NoEntityFoundException.class);
+        when(userService.find(anyString())).thenThrow(NoEntityFoundException.class);
 
-        Assert.assertThrows(NoEntityFoundException.class, () -> taskService.registerTask(""));
+        assertThrows(NoEntityFoundException.class, () -> taskService.registerTask(""));
     }
 
     @Test
     public void testUpdateTask() {
-        Mockito.when(taskRepository.findTaskByUserUsernameAndId(Mockito.anyString(), Mockito.anyLong()))
+        when(taskRepository.findTaskByUserUsernameAndId(anyString(), anyLong()))
                 .thenReturn(Optional.of(this.task));
-        Mockito.when(taskRepository.save(Mockito.any())).then(new Answer<Task>() {
+        when(taskRepository.save(Mockito.any())).then(new Answer<Task>() {
             @Override
             public Task answer(InvocationOnMock invocationOnMock) throws Throwable {
                 return (Task) invocationOnMock.getArguments()[0];
@@ -127,15 +128,14 @@ public class TaskServiceTest {
 
         Task myTask = taskService.updateTask(1L, this.taskDTO);
 
-        Assert.assertEquals(this.taskDTO.getResume(), myTask.getResume());
-        Assert.assertEquals(this.taskDTO.getDone(), myTask.getDone());
+        assertEquals(this.taskDTO.getResume(), myTask.getResume());
+        assertEquals(this.taskDTO.getDone(), myTask.getDone());
     }
 
     @Test
     public void testUpdateTaskNotExists() {
-        Mockito.when(taskRepository.findTaskByUserUsernameAndId(Mockito.anyString(), Mockito.anyLong()))
-                .thenReturn(Optional.empty());
+        when(taskRepository.findTaskByUserUsernameAndId(anyString(), anyLong())).thenReturn(Optional.empty());
 
-        Assert.assertThrows(NoEntityFoundException.class, () -> taskService.updateTask(1L, this.taskDTO));
+        assertThrows(NoEntityFoundException.class, () -> taskService.updateTask(1L, this.taskDTO));
     }
 }
