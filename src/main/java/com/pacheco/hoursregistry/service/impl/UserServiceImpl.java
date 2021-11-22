@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(UserDTO userDto, List<String> roleNames) throws DataIntegrityViolationException {
+    public User register(UserDTO userDto, List<String> roleNames) throws DuplicityEntityException {
 
         try {
             List<Role> roles = roleRepository.findByNameIn(roleNames);
