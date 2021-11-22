@@ -8,16 +8,12 @@ import java.util.List;
 
 public interface TaskService {
 
-    public List<Task> findAllTasks();
+    public Task registerTask(String taskResume, String username);
 
-    public List<Task> findTasksByDone(Boolean done);
+    public Task consultTask(Long taskId, String username) throws NoEntityFoundException;
 
-    public Task registerTask(String taskResume);
+    public void removeTask(Long taskId, String username);
 
-    public Task consultTask(Long taskId) throws NoEntityFoundException;
-
-    public void removeTask(Long taskId);
-
-    public Task updateTask(Long taskId, TaskDTO taskDTO) throws NoEntityFoundException;
+    public Task updateTask(Long taskId, TaskDTO taskDTO, String username) throws NoEntityFoundException;
 
 }

@@ -1,7 +1,6 @@
 package com.pacheco.hoursregistry.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.pacheco.hoursregistry.dto.TaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
@@ -32,39 +31,25 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private AuthorizationUtil authorizationUtil;
 
-    private String currentUsername() {
-        return authorizationUtil.currentUsername();
-    }
-
     @Override
-    public List<Task> findAllTasks() {
-        return repository.findTasksByUserUsername(currentUsername());
-    }
-
-    @Override
-    public List<Task> findTasksByDone(Boolean done) {
-        return repository.findTasksByUserUsernameAndDone(currentUsername(), done);
-    }
-
-    @Override
-    public Task registerTask(String taskResume) throws NoEntityFoundException {
-        User user = userService.find(currentUsername());
+    public Task registerTask(String taskResume, String username) throws NoEntityFoundException {
+        User user = userService.find(username);
         Task task = new Task(taskResume, user);
 
         return repository.save(task);
     }
 
     @Override
-    public Task consultTask(Long taskId) throws NoEntityFoundException {
-        return repository.findTaskByUserUsernameAndId(currentUsername(), taskId)
+    public Task consultTask(Long taskId, String username) throws NoEntityFoundException {
+        return repository.findTaskByUserUsernameAndId(username, taskId)
                 .orElseThrow(() -> new NoEntityFoundException(String.format(CANT_FIND_TASK, taskId)));
     }
 
     @Override
     @Transactional
-    public void removeTask(Long taskId) {
-        consultTask(taskId);
-        repository.deleteByUserUsernameAndId(currentUsername(), taskId);
+    public void removeTask(Long taskId, String username) {
+        consultTask(taskId, username);
+        repository.deleteByUserUsernameAndId(username, taskId);
     }
 
     private Task saveTask(Task task) {
@@ -72,8 +57,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTask(Long taskId, TaskDTO taskDTO) throws NoEntityFoundException {
-        Task taskActual = consultTask(taskId);
+    public Task updateTask(Long taskId, TaskDTO taskDTO, String username) throws NoEntityFoundException {
+        Task taskActual = consultTask(taskId, username);
         BeanUtils.copyProperties(taskDTO, taskActual, "id");
 
         return saveTask(taskActual);

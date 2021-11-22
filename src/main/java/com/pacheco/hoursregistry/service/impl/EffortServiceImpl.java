@@ -14,6 +14,8 @@ import com.pacheco.hoursregistry.util.AuthorizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
+
 @Service
 public class EffortServiceImpl implements EffortService {
 
@@ -28,19 +30,15 @@ public class EffortServiceImpl implements EffortService {
     @Autowired
     private AuthorizationUtil authorizationUtil;
 
-    private String currentUsername() {
-        return authorizationUtil.currentUsername();
-    }
-
     @Override
     public List<Effort> listEffortsFromTask(Long taskId) throws NoEntityFoundException {
-        Task task = taskService.consultTask(taskId);
+        Task task = taskService.consultTask(taskId, "");
         return task.getEfforts();
     }
 
     @Override
     public Effort updateEffort(Long taskId) throws NoEntityFoundException {
-        Task task = taskService.consultTask(taskId);
+        Task task = taskService.consultTask(taskId, "");
         Effort effort = task.updateUndoneEffortOrCreate();
 
         return repository.save(effort);

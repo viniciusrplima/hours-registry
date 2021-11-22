@@ -1,15 +1,17 @@
 package com.pacheco.hoursregistry.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.pacheco.hoursregistry.dto.TaskDTO;
 import com.pacheco.hoursregistry.model.Task;
+import com.pacheco.hoursregistry.repository.TaskRepository;
 import com.pacheco.hoursregistry.service.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
 
 @RestController
 @CrossOrigin
@@ -18,37 +20,34 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping("/tasks")
-    private List<Task> listTasks(@RequestParam(value="done", required=false) Optional<Boolean> taskDone) {
+    @Autowired
+    private TaskRepository taskRepository;
 
-        if (taskDone.isPresent()) {
-            return taskService.findTasksByDone(taskDone.get());
-        }
-        else {
-            return taskService.findAllTasks();
-        }
+    @GetMapping("/tasks")
+    private List<Task> listTasks(@RequestParam(value="done", required=false) Boolean taskDone) {
+        return taskRepository.findByQuery(taskDone, currentUsername());
     }
 
     @GetMapping("/tasks/{taskId}")
     private Task consultTask(@PathVariable Long taskId) {
-        return taskService.consultTask(taskId);
+        return taskService.consultTask(taskId, currentUsername());
     }
 
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
     private Task registerTask(@RequestBody String taskResume) {
-        return taskService.registerTask(taskResume);
+        return taskService.registerTask(taskResume, currentUsername());
     }
 
     @PutMapping("/tasks/{taskId}")
     public Task updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDTO) {
-        return taskService.updateTask(taskId, taskDTO);
+        return taskService.updateTask(taskId, taskDTO, currentUsername());
     }
 
     @DeleteMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void removeTask(@PathVariable Long taskId) {
-        taskService.removeTask(taskId);
+        taskService.removeTask(taskId, currentUsername());
     }
 
 }

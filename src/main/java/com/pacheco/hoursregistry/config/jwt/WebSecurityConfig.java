@@ -60,6 +60,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.csrf().disable();
-        //httpSecurity.headers().frameOptions().disable();
     }
 }
