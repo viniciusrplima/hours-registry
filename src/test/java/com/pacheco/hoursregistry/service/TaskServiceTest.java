@@ -43,6 +43,9 @@ public class TaskServiceTest {
     @Mock
     public TaskRepository taskRepository;
 
+    @Mock
+    public AuthorizationUtil auth;
+
     public User user;
 
     public Task task;
@@ -54,13 +57,15 @@ public class TaskServiceTest {
         this.user = new User("jimmy", "jimmy123", null, List.of(new Role(RoleTypes.USER)));
         this.task = new Task("task nova", this.user);
         this.taskDTO = new TaskDTO(false, "task dto");
+
+        when(auth.currentUsername()).thenReturn("vinicius");
     }
 
     @Test
     public void testFindTask() {
         when(taskRepository.findTaskByUserUsernameAndId(anyString(), anyLong())).thenReturn(Optional.of(this.task));
 
-        Task task = taskService.consultTask(1L, "");
+        Task task = taskService.consultTask(1L);
 
         assertEquals(this.task, task);
     }
@@ -70,7 +75,7 @@ public class TaskServiceTest {
         when(taskRepository.findTaskByUserUsernameAndId(anyString(), anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(NoEntityFoundException.class, () -> taskService.consultTask(1L, ""));
+        assertThrows(NoEntityFoundException.class, () -> taskService.consultTask(1L));
     }
 
     @Test
@@ -84,7 +89,7 @@ public class TaskServiceTest {
         });
 
         String taskResume = "my task resume";
-        Task task = taskService.registerTask(taskResume, "");
+        Task task = taskService.registerTask(taskResume);
 
         assertEquals(taskResume, task.getResume());
         assertFalse(task.getDone());
@@ -96,7 +101,7 @@ public class TaskServiceTest {
     public void testRegisterTaskUserNotExists() {
         when(userService.find(anyString())).thenThrow(NoEntityFoundException.class);
 
-        assertThrows(NoEntityFoundException.class, () -> taskService.registerTask("", ""));
+        assertThrows(NoEntityFoundException.class, () -> taskService.registerTask(""));
     }
 
     @Test
@@ -110,7 +115,7 @@ public class TaskServiceTest {
             }
         });
 
-        Task myTask = taskService.updateTask(1L, this.taskDTO, "");
+        Task myTask = taskService.updateTask(1L, this.taskDTO);
 
         assertEquals(this.taskDTO.getResume(), myTask.getResume());
         assertEquals(this.taskDTO.getDone(), myTask.getDone());
@@ -120,6 +125,6 @@ public class TaskServiceTest {
     public void testUpdateTaskNotExists() {
         when(taskRepository.findTaskByUserUsernameAndId(anyString(), anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(NoEntityFoundException.class, () -> taskService.updateTask(1L, this.taskDTO, ""));
+        assertThrows(NoEntityFoundException.class, () -> taskService.updateTask(1L, this.taskDTO));
     }
 }

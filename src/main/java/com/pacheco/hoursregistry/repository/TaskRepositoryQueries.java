@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface TaskRepositoryQueries {
 
-    public List<Task> findByQuery(Boolean done, String username);
+    public List<Task> findByQuery(Boolean done);
 
 }

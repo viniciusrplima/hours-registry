@@ -14,8 +14,6 @@ import com.pacheco.hoursregistry.util.AuthorizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.pacheco.hoursregistry.util.AuthorizationUtil.currentUsername;
-
 @Service
 public class EffortServiceImpl implements EffortService {
 
@@ -28,17 +26,17 @@ public class EffortServiceImpl implements EffortService {
     private EffortRepository repository;
 
     @Autowired
-    private AuthorizationUtil authorizationUtil;
+    private AuthorizationUtil auth;
 
     @Override
     public List<Effort> listEffortsFromTask(Long taskId) throws NoEntityFoundException {
-        Task task = taskService.consultTask(taskId, "");
+        Task task = taskService.consultTask(taskId);
         return task.getEfforts();
     }
 
     @Override
     public Effort updateEffort(Long taskId) throws NoEntityFoundException {
-        Task task = taskService.consultTask(taskId, "");
+        Task task = taskService.consultTask(taskId);
         Effort effort = task.updateUndoneEffortOrCreate();
 
         return repository.save(effort);
@@ -46,22 +44,22 @@ public class EffortServiceImpl implements EffortService {
 
     @Override
     public List<EffortTaskDTO> findDoneEfforts() {
-        return repository.findDoneEfforts(currentUsername());
+        return repository.findDoneEfforts(auth.currentUsername());
     }
 
     @Override
     public List<EffortTaskDTO> findUndoneEfforts() {
-        return repository.findDoneEfforts(currentUsername());
+        return repository.findDoneEfforts(auth.currentUsername());
     }
 
     @Override
     public List<EffortTaskDTO> findAllEfforts() {
-        return repository.findAllEfforts(currentUsername());
+        return repository.findAllEfforts(auth.currentUsername());
     }
 
     @Override
     public EffortTaskDTO consultEffortTask(Long effortId) throws NoEntityFoundException {
-        EffortTaskDTO effort = repository.findEffortTaskById(currentUsername(), effortId)
+        EffortTaskDTO effort = repository.findEffortTaskById(auth.currentUsername(), effortId)
                 .orElseThrow(() -> new NoEntityFoundException(String.format(CANT_FIND_EFFORT, effortId)));
 
         return effort;

@@ -3,6 +3,7 @@ package com.pacheco.hoursregistry.repository.impl;
 import com.pacheco.hoursregistry.model.Task;
 import com.pacheco.hoursregistry.repository.TaskRepository;
 import com.pacheco.hoursregistry.repository.TaskRepositoryQueries;
+import com.pacheco.hoursregistry.util.AuthorizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
@@ -22,14 +23,17 @@ public class TaskRepositoryQueriesImpl implements TaskRepositoryQueries {
     @Autowired @Lazy
     private TaskRepository taskRepository;
 
+    @Autowired
+    private AuthorizationUtil auth;
+
     @Override
-    public List<Task> findByQuery(Boolean done, String username) {
+    public List<Task> findByQuery(Boolean done) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
 
         CriteriaQuery criteria = builder.createQuery(Task.class);
         Root<Task> root = criteria.from(Task.class);
 
-        criteria.where(builder.equal(root.get("username"), username));
+        criteria.where(builder.equal(root.get("username"), auth.currentUsername()));
 
         if (done != null) {
             criteria.where(builder.equal(root.get("done"), done));

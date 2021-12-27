@@ -1,7 +1,5 @@
 package com.pacheco.hoursregistry.service.impl;
 
-import java.util.List;
-
 import com.pacheco.hoursregistry.dto.TaskDTO;
 import com.pacheco.hoursregistry.exception.NoEntityFoundException;
 import com.pacheco.hoursregistry.model.Task;
@@ -29,27 +27,27 @@ public class TaskServiceImpl implements TaskService {
     private UserService userService;
 
     @Autowired
-    private AuthorizationUtil authorizationUtil;
+    private AuthorizationUtil auth;
 
     @Override
-    public Task registerTask(String taskResume, String username) throws NoEntityFoundException {
-        User user = userService.find(username);
+    public Task registerTask(String taskResume) throws NoEntityFoundException {
+        User user = userService.find(auth.currentUsername());
         Task task = new Task(taskResume, user);
 
         return repository.save(task);
     }
 
     @Override
-    public Task consultTask(Long taskId, String username) throws NoEntityFoundException {
-        return repository.findTaskByUserUsernameAndId(username, taskId)
+    public Task consultTask(Long taskId) throws NoEntityFoundException {
+        return repository.findTaskByUserUsernameAndId(auth.currentUsername(), taskId)
                 .orElseThrow(() -> new NoEntityFoundException(String.format(CANT_FIND_TASK, taskId)));
     }
 
     @Override
     @Transactional
-    public void removeTask(Long taskId, String username) {
-        consultTask(taskId, username);
-        repository.deleteByUserUsernameAndId(username, taskId);
+    public void removeTask(Long taskId) {
+        consultTask(taskId);
+        repository.deleteByUserUsernameAndId(auth.currentUsername(), taskId);
     }
 
     private Task saveTask(Task task) {
@@ -57,8 +55,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTask(Long taskId, TaskDTO taskDTO, String username) throws NoEntityFoundException {
-        Task taskActual = consultTask(taskId, username);
+    public Task updateTask(Long taskId, TaskDTO taskDTO) throws NoEntityFoundException {
+        Task taskActual = consultTask(taskId);
         BeanUtils.copyProperties(taskDTO, taskActual, "id");
 
         return saveTask(taskActual);
