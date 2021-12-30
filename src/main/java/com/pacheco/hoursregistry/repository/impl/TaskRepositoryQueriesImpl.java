@@ -33,7 +33,7 @@ public class TaskRepositoryQueriesImpl implements TaskRepositoryQueries {
         CriteriaQuery criteria = builder.createQuery(Task.class);
         Root<Task> root = criteria.from(Task.class);
 
-        criteria.where(builder.equal(root.get("username"), auth.currentUsername()));
+        criteria.where(builder.equal(root.get("user").get("username"), auth.currentUsername()));
 
         if (done != null) {
             criteria.where(builder.equal(root.get("done"), done));
