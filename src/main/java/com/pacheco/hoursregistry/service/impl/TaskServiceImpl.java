@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -30,8 +31,14 @@ public class TaskServiceImpl implements TaskService {
     private AuthorizationUtil auth;
 
     @Override
+    public List<Task> listTasksFromUser() {
+        return repository.findTasksByUserUsername(auth.currentUsername());
+    }
+
+    @Override
     public Task registerTask(String taskResume) throws NoEntityFoundException {
-        User user = userService.find(auth.currentUsername());
+        String username = auth.currentUsername();
+        User user = userService.find(username);
         Task task = new Task(taskResume, user);
 
         return repository.save(task);

@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface TaskService {
 
+    public List<Task> listTasksFromUser();
+
     public Task registerTask(String taskResume);
 
     public Task consultTask(Long taskId) throws NoEntityFoundException;

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>, TaskRepositoryQueries {
 
+    public List<Task> findTasksByUserUsername(String username);
+
     public Optional<Task> findTaskByUserUsernameAndId(String username, Long id);
 
     public void deleteByUserUsernameAndId(String username, Long id);

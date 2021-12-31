@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks</title>
+</head>
+<body>
+<div class="container" style="width: 60%; margin-top: 20px;">
+    <a href="/new-task">New Task</a>
+    <table>
+        <tr>
+            <th>Resume</th>
+            <th>Done</th>
+        </tr>
+        <tr th:each="task: ${tasks}">
+            <td th:text="${task.resume}"/>
+            <td th:text="${task.done}"/>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

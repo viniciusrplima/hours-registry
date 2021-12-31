@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping
-public class EffortController {
+@RequestMapping("/api")
+public class EffortApiController {
 
     @Autowired
     private EffortService effortService;

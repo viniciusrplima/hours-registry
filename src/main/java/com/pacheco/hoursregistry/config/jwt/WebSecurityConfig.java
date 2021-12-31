@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,11 +17,37 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String[] PUBLIC_ROUTES = {
+            "/",
+            "/register",
+            "/login*",
+            "/logout",
+            "/api/register",
+            "/api/auth"
+    };
+
+    private static final String[] ADMIN_ROUTES = {
+            "/api/users/**"
+    };
+
+    private static final String[] USER_ROUTES = {
+            "/api/tasks/**",
+            "/api/efforts/**",
+            "/api/issues/**",
+    };
 
     @Autowired
     private JwtAuthenticationEntryPoint authenticationEntryPoint;
@@ -49,16 +76,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.httpBasic().and()
+        httpSecurity
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/tasks/**", "/efforts/**", "/issues/**").hasAuthority(RoleTypes.USER)
-                .antMatchers("/users/**").hasAuthority(RoleTypes.ADMIN)
-                .antMatchers("/auth/**", "/register").permitAll()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .antMatchers(USER_ROUTES).hasAuthority(RoleTypes.USER)
+                .antMatchers(ADMIN_ROUTES).hasAuthority(RoleTypes.ADMIN)
+                .antMatchers(PUBLIC_ROUTES).permitAll()
+                .and().formLogin().permitAll()
+                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+                //.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.csrf().disable();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/bootstrap/**");
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("OPTIONS", "GET", "POST", "PUT", "DELETE"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(Arrays.asList("Authorization"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }

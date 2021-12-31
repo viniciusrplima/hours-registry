@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
-public class AuthorizationController {
+@RequestMapping("/api")
+public class AuthorizationApiController {
 
     @Autowired
     private AuthenticationService authenticationService;
