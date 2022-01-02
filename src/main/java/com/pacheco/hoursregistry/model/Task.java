@@ -10,11 +10,15 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
 @Entity
+@ToString(exclude = "user")
 @NoArgsConstructor
-public class Task {
+public class Task extends Model {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +35,7 @@ public class Task {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
+    @Lazy
     private User user;
 
     public Task(String resume, User user) {

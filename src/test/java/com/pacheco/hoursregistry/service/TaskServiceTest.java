@@ -7,7 +7,6 @@ import com.pacheco.hoursregistry.model.RoleTypes;
 import com.pacheco.hoursregistry.model.Task;
 import com.pacheco.hoursregistry.model.User;
 import com.pacheco.hoursregistry.repository.TaskRepository;
-import com.pacheco.hoursregistry.service.impl.TaskServiceImpl;
 import com.pacheco.hoursregistry.util.AuthorizationUtil;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +34,7 @@ public class TaskServiceTest {
     public MockitoRule initRule = MockitoJUnit.rule();
 
     @InjectMocks
-    public TaskServiceImpl taskService;
+    public TaskService taskService;
 
     @Mock
     public UserService userService;

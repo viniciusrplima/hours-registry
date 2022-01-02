@@ -1,0 +1,1 @@
+alter table role add constraint unique_name unique(name);

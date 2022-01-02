@@ -18,11 +18,15 @@
             <tr>
                 <th>Resume</th>
                 <th>Done</th>
+                <th>Task</th>
             </tr>
         </thead>
         <tr th:each="task: ${tasks}">
-            <td th:text="${task.resume}"/>
+            <td>
+                <a th:href="${task.links.self}" th:text="${task.resume}"></a>
+            </td>
             <td th:text="${task.done}"/>
+            <td th:text="${task.links}"/>
         </tr>
     </table>
 </div>
